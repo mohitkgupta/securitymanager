@@ -1,4 +1,4 @@
-package org.vedantatree.securitymanager;
+package org.vedantatree.comps.securitymanager;
 
 import java.util.Collection;
 
@@ -6,18 +6,18 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.vedantatree.config.ConfigurationManager;
-import org.vedantatree.exceptions.ApplicationException;
-import org.vedantatree.exceptions.ExceptionUtils;
-import org.vedantatree.exceptions.IErrorCodes;
-import org.vedantatree.exceptions.SystemException;
-import org.vedantatree.securitymanager.model.ApplicationDomain;
-import org.vedantatree.securitymanager.model.Menu;
-import org.vedantatree.securitymanager.model.MenuItem;
-import org.vedantatree.securitymanager.model.User;
+import org.vedantatree.comps.securitymanager.model.ApplicationDomain;
+import org.vedantatree.comps.securitymanager.model.Menu;
+import org.vedantatree.comps.securitymanager.model.MenuItem;
+import org.vedantatree.comps.securitymanager.model.User;
 import org.vedantatree.utils.BeanUtils;
 import org.vedantatree.utils.StringUtils;
 import org.vedantatree.utils.Utilities;
+import org.vedantatree.utils.config.ConfigurationManager;
+import org.vedantatree.utils.exceptions.ApplicationException;
+import org.vedantatree.utils.exceptions.ExceptionUtils;
+import org.vedantatree.utils.exceptions.IErrorCodes;
+import org.vedantatree.utils.exceptions.SystemException;
 
 
 /**
@@ -28,14 +28,14 @@ import org.vedantatree.utils.Utilities;
  * 
  * @author Mohit Gupta <mohit.gupta@vedantatree.com>
  */
-public class SecurityManager
+public class AppSecurityManager
 {
 
-	private static Log				LOGGER						= LogFactory.getLog( SecurityManager.class );
+	private static Log				LOGGER						= LogFactory.getLog( AppSecurityManager.class );
 
-	public static final String		SECURITY_MANAGER_CLASSNAME	= SecurityManager.class.getName() + "_CurrentSM";
+	public static final String		SECURITY_MANAGER_CLASSNAME	= AppSecurityManager.class.getName() + "_CurrentSM";
 
-	private static SecurityManager	sharedInstance;
+	private static AppSecurityManager	sharedInstance;
 	private ISecurityService		securityService;
 
 	/**
@@ -45,7 +45,7 @@ public class SecurityManager
 	 * 
 	 * @return Shared instance of Security Manager
 	 */
-	public static SecurityManager getSharedInstance()
+	public static AppSecurityManager getSharedInstance()
 	{
 		if( sharedInstance == null )
 		{
@@ -55,7 +55,7 @@ public class SecurityManager
 
 			if( securityManagerClassName.equals( "com.daffodil.comps.securitymanager.SecurityManager" ) )
 			{
-				sharedInstance = new SecurityManager();
+				sharedInstance = new AppSecurityManager();
 			}
 			else
 			{
@@ -69,7 +69,7 @@ public class SecurityManager
 					LOGGER.error( se );
 					throw se;
 				}
-				if( !( newInstance instanceof SecurityManager ) )
+				if( !( newInstance instanceof AppSecurityManager ) )
 				{
 					SystemException se = new SystemException( IErrorCodes.ILLEGAL_ARGUMENT_ERROR,
 							"Wrong security manager class specified. It is not of security manager type. specifiedClassName["
@@ -77,13 +77,13 @@ public class SecurityManager
 					LOGGER.error( se );
 					throw se;
 				}
-				sharedInstance = (SecurityManager) newInstance;
+				sharedInstance = (AppSecurityManager) newInstance;
 			}
 		}
 		return sharedInstance;
 	}
 
-	protected SecurityManager()
+	protected AppSecurityManager()
 	{
 		// initial security service which implements ISecurityService interface, and can provide all security data
 		// objects
@@ -103,9 +103,9 @@ public class SecurityManager
 	 * @param password Password of the user
 	 * @param applicationName Name of the application, where we need to check the authenticity of specified credentials
 	 * @return User object, if information is authenticated
-	 * @throws SecurityException If any problem exists, like information is not authenticated
+	 * @throws AppSecurityException If any problem exists, like information is not authenticated
 	 */
-	public final User authenticate( String userName, String password, String applicationName ) throws SecurityException
+	public final User authenticate( String userName, String password, String applicationName ) throws AppSecurityException
 	{
 		LOGGER.trace( "authenticate: userName[" + userName + "] password["
 				+ ( password != null && password.trim().length() > 0 ) + "] appName[" + applicationName + "]" );
@@ -116,7 +116,7 @@ public class SecurityManager
 	}
 
 	protected User retrieveAndVerifyUser( String userName, String userPassword, String applicationName )
-			throws SecurityException
+			throws AppSecurityException
 	{
 		LOGGER.trace( "retrieveAndVerifyUser: userName[ " + userName + " ]" );
 
@@ -131,7 +131,7 @@ public class SecurityManager
 		catch( ApplicationException ae )
 		{
 			ExceptionUtils.logException( LOGGER, ae.getMessage(), ae );
-			throw new SecurityException( ae.getErrorCode(), ae.getMessage() );
+			throw new AppSecurityException( ae.getErrorCode(), ae.getMessage() );
 		}
 		return user;
 	}
@@ -142,16 +142,16 @@ public class SecurityManager
 	 * @param user User object for which we need to check the rights on given url
 	 * @param menuURL menu url to check for rights
 	 * @return Menu object of menu if user has rights on it
-	 * @throws SecurityException Seuciryt exception if user does not have right, or if any other problem occurs
+	 * @throws AppSecurityException Seuciryt exception if user does not have right, or if any other problem occurs
 	 */
-	public Menu validateRequestForMenu( User user, String menuURL ) throws SecurityException
+	public Menu validateRequestForMenu( User user, String menuURL ) throws AppSecurityException
 	{
 		LOGGER.trace( "validateRequestForMenu: user[" + user + "] URL[" + menuURL + "]" );
 
 		StringUtils.assertQualifiedArgument( menuURL );
 		if( user == null )
 		{
-			SecurityException se = new SecurityException( IErrorCodes.AUTHENTICATION_FAILURE,
+			AppSecurityException se = new AppSecurityException( IErrorCodes.AUTHENTICATION_FAILURE,
 					"No User found. User is either not authorized or not logged in" );
 			ExceptionUtils.logException( LOGGER, null, se );
 			throw se;
@@ -164,7 +164,7 @@ public class SecurityManager
 			return menu;
 		}
 
-		SecurityException se = new SecurityException( IErrorCodes.RESOURCE_NOT_FOUND,
+		AppSecurityException se = new AppSecurityException( IErrorCodes.RESOURCE_NOT_FOUND,
 				"No menu found for specified URL[" + menuURL + "]" );
 		LOGGER.info( se.getMessage() );
 		throw se;
@@ -177,17 +177,17 @@ public class SecurityManager
 	 * @param currentMenu Current menu under which specified menu item exists
 	 * @param menuItemURL URL of menu item for which we need to check the rights of specified user
 	 * @return Menu Item object, if user has right on it
-	 * @throws SecurityException If user does not have right, or any other problem occurs
+	 * @throws AppSecurityException If user does not have right, or any other problem occurs
 	 */
 	public MenuItem validateRequestForMenuItem( User user, Menu currentMenu, String menuItemURL )
-			throws SecurityException
+			throws AppSecurityException
 	{
 		LOGGER.trace( "validateRequestForMenuItem: user[" + user + "] currentMenu[" + currentMenu + "] menuItemURL["
 				+ menuItemURL + "]" );
 
 		if( user == null && currentMenu == null )
 		{
-			SecurityException se = new SecurityException( IErrorCodes.AUTHENTICATION_FAILURE,
+			AppSecurityException se = new AppSecurityException( IErrorCodes.AUTHENTICATION_FAILURE,
 					"User or Current Menu found null. It seems like user is not authorized or have no access on menu item. user["
 							+ user + "] currentMenu[" + currentMenu + "] URL[" + menuItemURL + "]" );
 			ExceptionUtils.logException( LOGGER, null, se );
@@ -198,7 +198,7 @@ public class SecurityManager
 			MenuItem menuItem = user.getMenuItemForURL( currentMenu, menuItemURL );
 			if( menuItem == null )
 			{
-				SecurityException se = new SecurityException( IErrorCodes.AUTHENTICATION_FAILURE,
+				AppSecurityException se = new AppSecurityException( IErrorCodes.AUTHENTICATION_FAILURE,
 						"No menu item found for current request. It seems like user is not authorized for menu item. user["
 								+ user + "] currentMenu[" + currentMenu + "] URL[" + menuItemURL + "]" );
 				LOGGER.info( se.getMessage() );
@@ -208,7 +208,7 @@ public class SecurityManager
 		}
 	}
 
-	public Collection<ApplicationDomain> getApplicationDomains( User user ) throws SecurityException
+	public Collection<ApplicationDomain> getApplicationDomains( User user ) throws AppSecurityException
 	{
 		return getSecurityService().getApplicationDomains( user );
 	}
@@ -299,23 +299,23 @@ public class SecurityManager
 
 	public static void main( String[] args )
 	{
-		String processedURI = new SecurityManager().getProcessedRequestURI( "/PB/menuitem.do?item-id=9877&menu=y" );
+		String processedURI = new AppSecurityManager().getProcessedRequestURI( "/PB/menuitem.do?item-id=9877&menu=y" );
 		System.err.println( "processedURI[" + processedURI + "]" );
 
-		processedURI = new SecurityManager().getProcessedRequestURI( "menuItem.do?item-id=6876" );
+		processedURI = new AppSecurityManager().getProcessedRequestURI( "menuItem.do?item-id=6876" );
 		System.err.println( "processedURI[" + processedURI + "]" );
 
-		processedURI = new SecurityManager().getProcessedRequestURI( "/menuItem.do?item-id=6876" );
+		processedURI = new AppSecurityManager().getProcessedRequestURI( "/menuItem.do?item-id=6876" );
 		System.err.println( "processedURI[" + processedURI + "]" );
 
-		processedURI = new SecurityManager().getProcessedRequestURI( "/menuItem.do?item-id=6876&menu=yes" );
+		processedURI = new AppSecurityManager().getProcessedRequestURI( "/menuItem.do?item-id=6876&menu=yes" );
 		System.err.println( "processedURI[" + processedURI + "]" );
 
-		processedURI = new SecurityManager().getProcessedRequestURI(
+		processedURI = new AppSecurityManager().getProcessedRequestURI(
 				"cashFlowPlan.do?action=managecashplandetail&className=com.etc.publicbooks.common.bdo.ap.budgetadm.CashPlan&id=15" );
 		System.err.println( "processedURI[" + processedURI + "]" );
 
-		processedURI = new SecurityManager()
+		processedURI = new AppSecurityManager()
 				.getProcessedRequestURI( "http://www.publicbooks.com/menuItem.do?item-id=6876&menu=yes" );
 		System.err.println( "processedURI[" + processedURI + "]" );
 

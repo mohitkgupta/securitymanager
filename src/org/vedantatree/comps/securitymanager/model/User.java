@@ -1,4 +1,4 @@
-package org.vedantatree.securitymanager.model;
+package org.vedantatree.comps.securitymanager.model;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -9,10 +9,10 @@ import java.util.TreeSet;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.vedantatree.exceptions.IErrorCodes;
-import org.vedantatree.exceptions.SystemException;
 import org.vedantatree.utils.StringUtils;
 import org.vedantatree.utils.Utilities;
+import org.vedantatree.utils.exceptions.IErrorCodes;
+import org.vedantatree.utils.exceptions.SystemException;
 
 
 /**
@@ -147,9 +147,9 @@ public class User
 	public User()
 	{
 		currentDomain = "default";
-		menus = new TreeSet<Menu>();
-		globalMenus = new TreeSet<Menu>();
-		urlToMenuMap = new HashMap<String, Menu>();
+		menus = new TreeSet<>();
+		globalMenus = new TreeSet<>();
+		urlToMenuMap = new HashMap<>();
 		initialized = false;
 	}
 
@@ -485,7 +485,7 @@ public class User
 	{
 		if( appSpecificInformation == null )
 		{
-			appSpecificInformation = new HashMap<Object, Object>();
+			appSpecificInformation = new HashMap<>();
 		}
 		return appSpecificInformation.put( identifier, value );
 	}

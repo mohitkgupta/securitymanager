@@ -1,6 +1,6 @@
-package org.vedantatree.securitymanager;
+package org.vedantatree.comps.securitymanager;
 
-import org.vedantatree.exceptions.ApplicationException;
+import org.vedantatree.utils.exceptions.ApplicationException;
 
 
 /**
@@ -13,17 +13,17 @@ import org.vedantatree.exceptions.ApplicationException;
  * @author Mohit Gupta [mohit.gupta@vedantatree.com]
  */
 
-public class SecurityException extends ApplicationException
+public class AppSecurityException extends ApplicationException
 {
 
 	private static final long	serialVersionUID	= 2009012201L;
 
-	public SecurityException( int errorCode, String message )
+	public AppSecurityException( int errorCode, String message )
 	{
 		super( errorCode, message );
 	}
 
-	public SecurityException( int errorCode, String message, Throwable th )
+	public AppSecurityException( int errorCode, String message, Throwable th )
 	{
 		super( errorCode, message, th );
 	}

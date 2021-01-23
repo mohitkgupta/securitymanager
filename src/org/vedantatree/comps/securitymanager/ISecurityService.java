@@ -1,14 +1,14 @@
-package org.vedantatree.securitymanager;
+package org.vedantatree.comps.securitymanager;
 
 import java.util.Collection;
 
-import org.vedantatree.exceptions.ApplicationException;
-import org.vedantatree.securitymanager.model.Application;
-import org.vedantatree.securitymanager.model.ApplicationDomain;
-import org.vedantatree.securitymanager.model.Menu;
-import org.vedantatree.securitymanager.model.MenuItem;
-import org.vedantatree.securitymanager.model.User;
-import org.vedantatree.securitymanager.model.UserRole;
+import org.vedantatree.comps.securitymanager.model.Application;
+import org.vedantatree.comps.securitymanager.model.ApplicationDomain;
+import org.vedantatree.comps.securitymanager.model.Menu;
+import org.vedantatree.comps.securitymanager.model.MenuItem;
+import org.vedantatree.comps.securitymanager.model.User;
+import org.vedantatree.comps.securitymanager.model.UserRole;
+import org.vedantatree.utils.exceptions.ApplicationException;
 
 
 /**
@@ -30,44 +30,44 @@ public interface ISecurityService
 	 * @param userName Id of the user
 	 * @param password Password for the user
 	 * @return User object if Security service has some user corresponding to specified information
-	 * @throws SecurityException If user does not exist with specified information
+	 * @throws AppSecurityException If user does not exist with specified information
 	 * @throws If there is any problem other than above
 	 */
 	User getUser( String userName, String password, String applicationName ) throws ApplicationException,
-			SecurityException;
+			AppSecurityException;
 
 	/**
 	 * This method will return the collection of the menus associated with the specified user for all roles
 	 * 
 	 * @param user User object for which service need to return the menus
 	 * @return Collection of menus for specified user
-	 * @throws SecurityException If there is any problem
+	 * @throws AppSecurityException If there is any problem
 	 */
-	Collection<Menu> getMenus( User user ) throws SecurityException;
+	Collection<Menu> getMenus( User user ) throws AppSecurityException;
 
 	/**
 	 * It returns the Set of MenuItems for the specified menu
 	 * 
 	 * @param menu Menu for which service need to return the menu items
 	 * @return Collection of menu items for specified menu
-	 * @throws SecurityException If there is any problem
+	 * @throws AppSecurityException If there is any problem
 	 */
-	Collection<MenuItem> getMenuItems( Menu menu ) throws SecurityException;
+	Collection<MenuItem> getMenuItems( Menu menu ) throws AppSecurityException;
 
 	/**
 	 * This method returns the collection of all applications registered with Security Service.
 	 * 
 	 * @return Collection of all applications
-	 * @throws SecurityException If there is any problem
+	 * @throws AppSecurityException If there is any problem
 	 */
-	Collection<Application> getAllApplications() throws SecurityException;
+	Collection<Application> getAllApplications() throws AppSecurityException;
 
 	/**
 	 * This method returns the collection of all applications in which specified user is registered
 	 * 
 	 * @param user User object for which service needs to return the applications
 	 * @return Collection of applications for specified user
-	 * @throws SecurityException If there is any problem
+	 * @throws AppSecurityException If there is any problem
 	 */
 	Collection<Application> getApplications( User user );
 
@@ -76,26 +76,26 @@ public interface ISecurityService
 	 * 
 	 * @param user User object for which we need to return the application domains
 	 * @return Collection of application domains
-	 * @throws SecurityException If there is any problem
+	 * @throws AppSecurityException If there is any problem
 	 */
-	Collection<ApplicationDomain> getApplicationDomains( User user ) throws SecurityException;
+	Collection<ApplicationDomain> getApplicationDomains( User user ) throws AppSecurityException;
 
 	/**
 	 * It returns the roles associated with user
 	 * 
 	 * @param user User object for which service needs to return the collection of roles
-	 * @throws SecurityException If there is any problem
+	 * @throws AppSecurityException If there is any problem
 	 */
 
-	Collection<UserRole> getUserRoles( User user ) throws SecurityException;
+	Collection<UserRole> getUserRoles( User user ) throws AppSecurityException;
 
 	/**
 	 * It returns all roles for the application
 	 * 
 	 * @return Collection of all roles available with security service
-	 * @throws SecurityException If there is any problem
+	 * @throws AppSecurityException If there is any problem
 	 */
-	Collection<UserRole> getApplicationRoles() throws SecurityException;
+	Collection<UserRole> getApplicationRoles() throws AppSecurityException;
 	
 	/**
 	 * It generates the temporary password  and sends that generated password to user mail id.
@@ -103,7 +103,7 @@ public interface ISecurityService
 	 * @param userName id of the user
 	 * @param mail id of the user
 	 * @return boolean true, if password is generated and mail sent to user.
-	 * @throws SecurityException If any problem exists.
+	 * @throws AppSecurityException If any problem exists.
 	 */
 	public boolean startPwdRecoverRequest( String userName, String emailId ) throws ApplicationException;
 }

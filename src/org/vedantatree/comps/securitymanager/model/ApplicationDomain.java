@@ -1,4 +1,4 @@
-package org.vedantatree.securitymanager.model;
+package org.vedantatree.comps.securitymanager.model;
 
 import java.util.Set;
 

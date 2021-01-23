@@ -15,5 +15,6 @@
 	<classpathentry kind="lib" path="lib/utilities.jar"/>
 	<classpathentry kind="lib" path="lib/xalan.jar"/>
 	<classpathentry kind="lib" path="lib/xercesImpl.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/Utilities"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

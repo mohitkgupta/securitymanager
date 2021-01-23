@@ -1,4 +1,4 @@
-package org.vedantatree.securitymanager.model;
+package org.vedantatree.comps.securitymanager.model;
 
 import java.util.Collection;
 import java.util.Map;
@@ -6,10 +6,10 @@ import java.util.TreeSet;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.vedantatree.exceptions.IErrorCodes;
-import org.vedantatree.exceptions.SystemException;
 import org.vedantatree.utils.StringUtils;
 import org.vedantatree.utils.Utilities;
+import org.vedantatree.utils.exceptions.IErrorCodes;
+import org.vedantatree.utils.exceptions.SystemException;
 
 
 /**
@@ -84,12 +84,12 @@ public class MenuItem implements Comparable<MenuItem>, Cloneable
 
 	public MenuItem()
 	{
-		subMenuItems = new TreeSet<MenuItem>();
+		subMenuItems = new TreeSet<>();
 	}
 
 	public MenuItem( int index, String displayName, String url, byte actionType )
 	{
-		subMenuItems = new TreeSet<MenuItem>();
+		subMenuItems = new TreeSet<>();
 		this.index = index;
 		this.displayName = displayName;
 		this.url = url;
@@ -273,6 +273,7 @@ public class MenuItem implements Comparable<MenuItem>, Cloneable
 		return super.clone();
 	}
 
+	@Override
 	public int compareTo( MenuItem menuItem )
 	{
 		if( menuItem != null )
